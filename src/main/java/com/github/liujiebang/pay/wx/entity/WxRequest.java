@@ -45,13 +45,21 @@ public class WxRequest {
          */
         public static final String OPENID = "openid";
         /**
-         * NATIVE模式必传
+         * NATIVE模式必传(目前测试不传并没问题)
          */
         public static final String PRODUCT_ID = "product_id";
+        /**
+         * H5支付必传(目前测试不传并没问题)
+         */
+        public static final String SCENE_INFO = "scene_info";
         /**
          * 微信返回预支付id
          */
         public static final String PREPAY_ID = "prepay_id";
+
+        public static final String RETURN_CODE = "return_code";
+
+        public static final String RETURN_MSG = "return_msg";
 
     }
 
@@ -79,7 +87,7 @@ public class WxRequest {
         public static final String CODE_URL = "code_url";
     }
 
-    public static class evokePaymentH5{
+    public static class evokePaymentH5 {
         public static final String MWEB_URL = "mweb_url";
     }
 

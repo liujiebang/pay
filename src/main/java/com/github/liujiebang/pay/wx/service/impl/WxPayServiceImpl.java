@@ -331,13 +331,13 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
 
     private String wxPayInitialization(String orderId, double payAmount, String openId, String payType) throws PayException {
         Map<String, String> map = new TreeMap<String, String>();
+        map.put(WxRequest.unifiedOrder.BODY, wxConfig.getBody());
+        map.put(WxRequest.unifiedOrder.NONCE_STR, IdentityUtil.uuid());
+        map.put(WxRequest.unifiedOrder.NOTIFY_URL, wxConfig.getNotifyUrl());
+        map.put(WxRequest.unifiedOrder.OUT_TRADE_NO, orderId);
+        map.put(WxRequest.unifiedOrder.SPBILL_CREATE_IP, IdentityUtil.getLocalhostIp());
+        map.put(WxRequest.unifiedOrder.TOTAL_FEE, IdentityUtil.getMoeny(payAmount));
         try {
-            map.put(WxRequest.unifiedOrder.BODY, wxConfig.getBody());
-            map.put(WxRequest.unifiedOrder.NONCE_STR, IdentityUtil.uuid());
-            map.put(WxRequest.unifiedOrder.NOTIFY_URL, wxConfig.getNotifyUrl());
-            map.put(WxRequest.unifiedOrder.OUT_TRADE_NO, orderId);
-            map.put(WxRequest.unifiedOrder.SPBILL_CREATE_IP, IdentityUtil.getLocalhostIp());
-            map.put(WxRequest.unifiedOrder.TOTAL_FEE, IdentityUtil.getMoeny(payAmount));
             if (WxRequest.WX_PP_PAY.equals(payType)) {
                 map.put(WxRequest.unifiedOrder.APPID, wxConfig.getPpAppId());
                 map.put(WxRequest.unifiedOrder.MCH_ID, wxConfig.getPpMchId());
@@ -372,15 +372,19 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
         try {
             String xml = XMLUtil.mapToXml(map);
             String result = HttpClientUtil.httpsRequest(WxRequest.UNIFIED_ORDER_URL, HttpClientUtil.POST, xml);
+            Map<String, String> resultMap = XMLUtil.xmlToMap(result);
+            if (WxRequest.Status.FAIL.equals(resultMap.get(WxRequest.unifiedOrder.RETURN_CODE))) {
+                throw new PayException(resultMap.get(WxRequest.unifiedOrder.RETURN_MSG));
+            }
             if (WxRequest.WX_NATIVE_PAY.equals(payType)) {
-                return XMLUtil.xmlToMap(result).get(WxRequest.evokePaymentNATIVE.CODE_URL);
+                return resultMap.get(WxRequest.evokePaymentNATIVE.CODE_URL);
             }
             if (WxRequest.WX_H5_PAY.equals(payType)) {
-                return XMLUtil.xmlToMap(result).get(WxRequest.evokePaymentH5.MWEB_URL);
+                return resultMap.get(WxRequest.evokePaymentH5.MWEB_URL);
             }
-            return XMLUtil.xmlToMap(result).get(WxRequest.unifiedOrder.PREPAY_ID);
+            return resultMap.get(WxRequest.unifiedOrder.PREPAY_ID);
         } catch (Exception e) {
-            throw new PayException("参数解析失败:" + e.getMessage());
+            throw new PayException("请求失败:" + e.getMessage());
         }
     }
 
