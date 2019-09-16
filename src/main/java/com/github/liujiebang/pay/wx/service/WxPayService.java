@@ -30,13 +30,22 @@ public interface WxPayService extends WxService {
     Map wxPpPay(String orderId, double payAmount, String openId);
 
     /**
-     * 微信网页支付
+     * 微信PC扫码支付
      *
      * @param orderId   支付单号
      * @param payAmount 支付金额
      * @return 网页支付链接（需将该链接生成二维码支付）
      */
-    Map wxWebPay(String orderId, double payAmount);
+    Map wxNativePay(String orderId, double payAmount);
+
+    /**
+     * 微信H5支付
+     *
+     * @param orderId   支付单号
+     * @param payAmount 支付金额
+     * @return H5拉取微信支付收银台的中间页面url, 有效期5分钟
+     */
+    Map wxH5Pay(String orderId, double payAmount);
 
     /**
      * 小程序支付
@@ -51,15 +60,15 @@ public interface WxPayService extends WxService {
     /**
      * 微信退款
      *
-     * @param transactionId  微信订单号
-     * @param outTradeNo  商户订单号
-     * @param outRefundNo 商户退款单号
-     * @param allMoney    总金额
-     * @param money       退款金额
-     * @param payType     退款渠道
+     * @param transactionId 微信订单号
+     * @param outTradeNo    商户订单号
+     * @param outRefundNo   商户退款单号
+     * @param allMoney      总金额
+     * @param money         退款金额
+     * @param payType       退款渠道
      * @return true:微信退款发起成功
      */
-    boolean wxReturn(String transactionId, String outTradeNo, String outRefundNo, double allMoney, double money, String payType) throws PayException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException;
+    boolean wxReturn(String transactionId, String outTradeNo, String outRefundNo, double allMoney, double money, String payType) throws PayException;
 
     /**
      * 微信订单查询

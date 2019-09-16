@@ -1,6 +1,7 @@
 package com.github.liujiebang.pay.wx.service.impl;
 
 import com.github.liujiebang.pay.utils.*;
+import com.github.liujiebang.pay.wx.config.WxConfig;
 import com.github.liujiebang.pay.wx.entity.WxRequest;
 import com.github.liujiebang.pay.wx.service.WxPayService;
 
@@ -60,10 +61,18 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
 
 
     @Override
-    public Map wxWebPay(String orderId, double payAmount) {
-        String codeUrl = wxPayInitialization(orderId, payAmount, null, WxRequest.WX_WEB_PAY);
+    public Map wxNativePay(String orderId, double payAmount) {
+        String url = wxPayInitialization(orderId, payAmount, null, WxRequest.WX_NATIVE_PAY);
         Map<String, String> map = new TreeMap<String, String>();
-        map.put(WxRequest.evokePaymentNATIVE.CODE_URL, codeUrl);
+        map.put(WxRequest.evokePaymentNATIVE.CODE_URL, url);
+        return map;
+    }
+
+    @Override
+    public Map wxH5Pay(String orderId, double payAmount) {
+        String url = wxPayInitialization(orderId, payAmount, null, WxRequest.WX_H5_PAY);
+        Map<String, String> map = new TreeMap<String, String>();
+        map.put(WxRequest.evokePaymentH5.MWEB_URL, url);
         return map;
     }
 
@@ -93,19 +102,20 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
         Map<String, String> map = null;
         if (WxRequest.WX_APP_PAY.equals(payType)) {
             map = wxAppPay(orderId, payAmount);
-        } else if (WxRequest.WX_WEB_PAY.equals(payType)) {
-            map = wxWebPay(orderId, payAmount);
+        } else if (WxRequest.WX_NATIVE_PAY.equals(payType)) {
+            map = wxNativePay(orderId, payAmount);
         } else if (WxRequest.WX_PP_PAY.equals(payType)) {
             map = wxPpPay(orderId, payAmount, openId);
         } else if (WxRequest.WX_SP_PAY.equals(payType)) {
             map = wxSpPay(orderId, payAmount, openId);
+        } else if (WxRequest.WX_H5_PAY.equals(payType)) {
+            map = wxH5Pay(orderId, payAmount);
         }
         return map;
     }
 
-
     @Override
-    public boolean wxReturn(String transactionId, String outTradeNo, String outRefundNo, double allMoney, double money, String payType) {
+    public boolean wxReturn(String transactionId, String outTradeNo, String outRefundNo, double allMoney, double money, String payType) throws PayException {
         String certPath = null;
         Map<String, String> map = new TreeMap<String, String>();
         map.put(WxRequest.evokeRefund.NONCE_STR, IdentityUtil.uuid());
@@ -120,7 +130,7 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
                 map.put(WxRequest.evokeRefund.MCH_ID, wxConfig.getPpMchId());
                 map.put(WxRequest.evokeRefund.SIGN, IdentityUtil.createSign(map, wxConfig.getPpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
                 certPath = wxConfig.getPpCertPath();
-            } else if (WxRequest.WX_APP_PAY.equals(payType) || WxRequest.WX_WEB_PAY.equals(payType)) {
+            } else if (WxRequest.WX_APP_PAY.equals(payType) || WxRequest.WX_NATIVE_PAY.equals(payType) || WxRequest.WX_H5_PAY.equals(payType)) {
                 map.put(WxRequest.evokeRefund.APPID, wxConfig.getOpAppId());
                 map.put(WxRequest.evokeRefund.MCH_ID, wxConfig.getOpMchId());
                 map.put(WxRequest.evokeRefund.SIGN, IdentityUtil.createSign(map, wxConfig.getOpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
@@ -212,7 +222,7 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
                 map.put(WxRequest.evokeTransfers.MCHID, wxConfig.getPpMchId());
                 map.put(WxRequest.evokeTransfers.SIGN, IdentityUtil.createSign(map, wxConfig.getPpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
                 certPath = wxConfig.getPpCertPath();
-            } else if (WxRequest.WX_APP_PAY.equals(payType) || WxRequest.WX_WEB_PAY.equals(payType)) {
+            } else if (WxRequest.WX_APP_PAY.equals(payType) || WxRequest.WX_NATIVE_PAY.equals(payType) || WxRequest.WX_H5_PAY.equals(payType)) {
                 map.put(WxRequest.evokeTransfers.MCH_APPID, wxConfig.getOpAppId());
                 map.put(WxRequest.evokeTransfers.MCHID, wxConfig.getOpMchId());
                 map.put(WxRequest.evokeTransfers.SIGN, IdentityUtil.createSign(map, wxConfig.getOpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
@@ -258,7 +268,7 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
                 map.put(WxRequest.evokeTransferInfo.MCH_ID, wxConfig.getPpMchId());
                 map.put(WxRequest.evokeTransferInfo.SIGN, IdentityUtil.createSign(map, wxConfig.getPpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
                 certPath = wxConfig.getPpCertPath();
-            } else if (WxRequest.WX_APP_PAY.equals(payType) || WxRequest.WX_WEB_PAY.equals(payType)) {
+            } else if (WxRequest.WX_APP_PAY.equals(payType) || WxRequest.WX_NATIVE_PAY.equals(payType) || WxRequest.WX_H5_PAY.equals(payType)) {
                 map.put(WxRequest.evokeTransferInfo.APPID, wxConfig.getOpAppId());
                 map.put(WxRequest.evokeTransferInfo.MCH_ID, wxConfig.getOpMchId());
                 map.put(WxRequest.evokeTransferInfo.SIGN, IdentityUtil.createSign(map, wxConfig.getOpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
@@ -300,7 +310,7 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
                 map.put(WxRequest.evokeRefund.APPID, wxConfig.getPpAppId());
                 map.put(WxRequest.evokeRefund.MCH_ID, wxConfig.getPpMchId());
                 map.put(WxRequest.evokeRefund.SIGN, IdentityUtil.createSign(map, wxConfig.getPpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
-            } else if (WxRequest.WX_APP_PAY.equals(payType) || WxRequest.WX_WEB_PAY.equals(payType)) {
+            } else if (WxRequest.WX_APP_PAY.equals(payType) || WxRequest.WX_NATIVE_PAY.equals(payType) || WxRequest.WX_H5_PAY.equals(payType)) {
                 map.put(WxRequest.evokeRefund.APPID, wxConfig.getOpAppId());
                 map.put(WxRequest.evokeRefund.MCH_ID, wxConfig.getOpMchId());
                 map.put(WxRequest.evokeRefund.SIGN, IdentityUtil.createSign(map, wxConfig.getOpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
@@ -339,7 +349,7 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
                 map.put(WxRequest.unifiedOrder.MCH_ID, wxConfig.getOpMchId());
                 map.put(WxRequest.unifiedOrder.TRADE_TYPE, WxRequest.tradeType.APP);
                 map.put(WxRequest.unifiedOrder.SIGN, IdentityUtil.createSign(map, wxConfig.getOpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
-            } else if (WxRequest.WX_WEB_PAY.equals(payType)) {
+            } else if (WxRequest.WX_NATIVE_PAY.equals(payType)) {
                 map.put(WxRequest.unifiedOrder.APPID, wxConfig.getOpAppId());
                 map.put(WxRequest.unifiedOrder.MCH_ID, wxConfig.getOpMchId());
                 map.put(WxRequest.unifiedOrder.TRADE_TYPE, WxRequest.tradeType.NATIVE);
@@ -350,6 +360,11 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
                 map.put(WxRequest.unifiedOrder.OPENID, openId);
                 map.put(WxRequest.unifiedOrder.TRADE_TYPE, WxRequest.tradeType.JSAPI);
                 map.put(WxRequest.unifiedOrder.SIGN, IdentityUtil.createSign(map, wxConfig.getSpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
+            } else if (WxRequest.WX_H5_PAY.equals(payType)) {
+                map.put(WxRequest.unifiedOrder.APPID, wxConfig.getOpAppId());
+                map.put(WxRequest.unifiedOrder.MCH_ID, wxConfig.getOpMchId());
+                map.put(WxRequest.unifiedOrder.TRADE_TYPE, WxRequest.tradeType.MWEB);
+                map.put(WxRequest.unifiedOrder.SIGN, IdentityUtil.createSign(map, wxConfig.getOpMchKey(), IdentityUtil.SIGN_TYPE_MD5));
             }
         } catch (Exception e) {
             throw new PayException("未初始化参数");
@@ -357,8 +372,11 @@ public class WxPayServiceImpl extends WxServiceImpl implements WxPayService {
         try {
             String xml = XMLUtil.mapToXml(map);
             String result = HttpClientUtil.httpsRequest(WxRequest.UNIFIED_ORDER_URL, HttpClientUtil.POST, xml);
-            if (WxRequest.WX_WEB_PAY.equals(payType)) {
+            if (WxRequest.WX_NATIVE_PAY.equals(payType)) {
                 return XMLUtil.xmlToMap(result).get(WxRequest.evokePaymentNATIVE.CODE_URL);
+            }
+            if (WxRequest.WX_H5_PAY.equals(payType)) {
+                return XMLUtil.xmlToMap(result).get(WxRequest.evokePaymentH5.MWEB_URL);
             }
             return XMLUtil.xmlToMap(result).get(WxRequest.unifiedOrder.PREPAY_ID);
         } catch (Exception e) {

@@ -6,12 +6,14 @@ public class WxRequest {
     public static final String WX_PP_PAY = "WX_PP";
     public static final String WX_SP_PAY = "WX_SP";
     public static final String WX_APP_PAY = "WX_APP";
-    public static final String WX_WEB_PAY = "WX_WEB";
+    public static final String WX_NATIVE_PAY = "WX_NATIVE";
+    public static final String WX_H5_PAY = "WX_H5";
 
     public static class tradeType {
-        public static String JSAPI = "JSAPI";
-        public static String NATIVE = "NATIVE";
-        public static String APP = "APP";
+        public static final String JSAPI = "JSAPI";
+        public static final String NATIVE = "NATIVE";
+        public static final String APP = "APP";
+        public static final String MWEB = "MWEB";
     }
 
     public static class unifiedOrder {
@@ -75,6 +77,10 @@ public class WxRequest {
 
     public static class evokePaymentNATIVE {
         public static final String CODE_URL = "code_url";
+    }
+
+    public static class evokePaymentH5{
+        public static final String MWEB_URL = "mweb_url";
     }
 
     public static class evokeRefund {
@@ -211,5 +217,5 @@ public class WxRequest {
     /**
      * 公众号获取用户基本信息(UnionID机制)
      */
-    public final static String PP_GET_UNION_USERINFO_URL="https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN";
+    public final static String PP_GET_UNION_USERINFO_URL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN";
 }
