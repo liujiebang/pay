@@ -38,9 +38,9 @@
         wxConfig.setWxSpCertPath("证书地址路径【退款,企业转账功能需要该参数】");
         WxPayService wxPayService=new WxPayServiceImpl();
         wxPayService.setWxConfigStorage(wxConfig);
-		//网页支付NATIVE模式返回支付二维码链接,用于生成二维码进行扫码支付
+	//网页支付NATIVE模式返回支付二维码链接,用于生成二维码进行扫码支付
         System.out.println(wxPayService.wxWebPay("支付单号",0.01));		
-		System.out.println(wxPayService.wxAppPay("支付单号",0.01));
+	System.out.println(wxPayService.wxAppPay("支付单号",0.01));
         System.out.println(wxPayService.wxPpPay("支付单号",0.01,"公众号获取的openId"));
         System.out.println(wxPayService.wxSpPay("支付单号",0.01,"小程序获取的openId"));
     }
