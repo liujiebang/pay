@@ -1,4 +1,3 @@
-@[TOC](微信，支付宝支付，微信公众号小程序授权等)
 ## 前言
 最近在公司也做了很多移动端项目，如今微信公众号，小程序又特别火爆，免不了要接触支付，授权这类的业务需求,所以在工作之余对支付宝支付，微信支付与授权重新梳理，独立出来分享到maven中央仓库，方便大家简单使用！
 ## 微信支付
@@ -54,20 +53,20 @@
         try {
             Map<String, String> map = XMLUtil.wxPayNotify(request);
             if ("SUCCESS".equals(map.get("return_code")) && "SUCCESS".equals(map.get("result_code"))) {
-   				//签名校验-取绑定对应平台的商户秘钥
+   		//签名校验-取绑定对应平台的商户秘钥
                 if (IdentityUtil.inspectionSign(map, wxConfig.getWxSpMchKey())) {
-                      //调起支付所传入的支付流水号
-                      String outTradeNo = map.get("out_trade_no");
-                      //业务逻辑处理--校验签名,支付单号,还可以校验金额这里自由发挥
-                      result = XMLUtil.setWechatXml("SUCCESS", "OK");
+                    //调起支付所传入的支付流水号
+                    String outTradeNo = map.get("out_trade_no");
+                    //业务逻辑处理--校验签名,支付单号,还可以校验金额这里自由发挥
+                    result = XMLUtil.setWechatXml("SUCCESS", "OK");
                 } else {
                     return XMLUtil.setWechatXml("FAIL", "验签失败");
                 }  
             }
         } catch (Exception e) {
+	    result = XMLUtil.setWechatXml("FAIL", "回调通知异常");
+	    log.info("---------------------------回调通知异常！！！-------------------------------");
             e.printStackTrace();
-            log.info("---------------------------回调通知异常！！！-------------------------------");
-            result = XMLUtil.setWechatXml("FAIL", "回调通知异常");
         } finally {
             return result;
         }
@@ -176,7 +175,7 @@ public interface WxAuthService extends WxService {
 ```
 
 ## maven依赖(更新)
-因为写的赶，大部分接口注释暂时没有补上，后续会持续更新。（觉得好用可以点个赞哟）
+后续会持续更新。（觉得好用可以点个赞哟）
 ```javascript
 		
         <dependency>
