@@ -4,7 +4,7 @@ package com.github.liujiebang.pay.wx.entity;
 import java.io.Serializable;
 import java.util.Map;
 
-public class WxSendMessageTemplate implements Serializable {
+public class WxSpSendMessageTemplate implements Serializable {
 
     /**
      * 接收者的openid
@@ -83,7 +83,7 @@ public class WxSendMessageTemplate implements Serializable {
 
     @Override
     public String toString() {
-        return "WxSendMessageTemplate{" +
+        return "WxSpSendMessageTemplate{" +
                 "touser='" + touser + '\'' +
                 ", template_id='" + template_id + '\'' +
                 ", page='" + page + '\'' +

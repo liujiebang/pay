@@ -194,9 +194,9 @@ public class WxRequest {
     public final static String PP_CODE_AUTHORIZATION_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=%s&state=%s#wechat_redirect";
 
     /**
-     * 公众扫一扫获取AccessToken(GET)
+     * 公众获取AccessToken(GET)
      */
-    public final static String PP_SCAN_ACCESSTOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
+    public final static String PP_GET_ACCESSTOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s";
 
     /**
      * 微信扫一扫获取JsApiTicket(GET)
@@ -222,6 +222,10 @@ public class WxRequest {
      * 微信小程序发送模板消息
      */
     public final static String SP_SEND_TEMPLATE_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=%s";
+    /**
+     * 微信公众号发送模板消息
+     */
+    public final static String PP_SEND_TEMPLATE_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s";
     /**
      * 公众号获取用户基本信息(UnionID机制)
      */

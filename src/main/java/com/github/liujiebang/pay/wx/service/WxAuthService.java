@@ -65,12 +65,12 @@ public interface WxAuthService extends WxService {
     WxUserInfo wxOAuth2getUserInfo(String accessToken, String openId) throws Exception;
 
     /**
-     * 微信公众号扫一扫获取AccessToken
+     * 微信公众号获取AccessToken
      *
      * @return 接口调用凭证
      * @throws Exception
      */
-    WxOAuth2Info wxPpOAuth2ScanAccessToken() throws Exception;
+    WxOAuth2Info wxPpOAuth2AccessToken() throws Exception;
 
     /**
      * 微信公众号生成扫一扫的签名

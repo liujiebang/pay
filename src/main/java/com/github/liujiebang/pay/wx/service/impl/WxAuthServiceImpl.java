@@ -73,8 +73,8 @@ public class WxAuthServiceImpl extends WxServiceImpl implements WxAuthService {
     }
 
     @Override
-    public WxOAuth2Info wxPpOAuth2ScanAccessToken() throws Exception {
-        String url = String.format(WxRequest.PP_SCAN_ACCESSTOKEN_URL, wxConfig.getPpAppId(), wxConfig.getPpSecrect());
+    public WxOAuth2Info wxPpOAuth2AccessToken() throws Exception {
+        String url = String.format(WxRequest.PP_GET_ACCESSTOKEN_URL, wxConfig.getPpAppId(), wxConfig.getPpSecrect());
         return getWxOAuth2Info(url);
     }
 
